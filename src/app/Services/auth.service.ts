@@ -16,19 +16,12 @@ export class Auth {
 
     user$:BehaviorSubject<string> = new BehaviorSubject('');
     
-    store(str:string ,ntr : string) : Observable<any> {
-        let body = {
-            name : str,
-            place : ntr
-        }
-        return this.http.post(this.databaseUrl,body);
-    }
-    // signUp(body:newuser) : Observable<any>{
-    //     return this.http.post(this.signupUrl,body);
-    // }
-
-    // signIn(){
-    //     return this.http.post(this.signinUrl,body)
+    // store(str:string ,ntr : string) : Observable<any> {
+    //     let body = {
+    //         name : str,
+    //         place : ntr
+    //     }
+    //     return this.http.post(this.databaseUrl,body);
     // }
     register(action:String , body:newuser) : Observable<any>{
         let url = action.toUpperCase() == 'LOGIN' ? this.signinUrl : this.signupUrl ;
@@ -40,5 +33,13 @@ export class Auth {
         return this.http.post(this.databaseUrl+val+'.json',{
             name:username
         });
+    }
+
+    postData(body:any,str:String) : Observable<any> {
+        return this.http.post(this.databaseUrl+str+'.json',body);
+    }
+    
+    getData(path:String) : Observable<any> {
+        return this.http.get(this.databaseUrl+path+'.json');
     }
 }

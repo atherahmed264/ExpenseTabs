@@ -4,6 +4,7 @@ import { FormBuilder, Validators } from '@angular/forms';
 import { newuser } from '../Services/newUser.model';
 import { Router } from '@angular/router';
 
+
 @Component({
   selector: 'app-authenticate',
   templateUrl: './authenticate.component.html',
@@ -42,9 +43,13 @@ export class AuthenticateComponent implements OnInit {
           console.log(res.email);
           let [user] = res.email.split('@');
           this.serv.user$.next(user);
+          sessionStorage.setItem('user',user);
           this.route.navigate(['/landing'])
         },
-        error: err => console.log(err.message),
+        error: err => {
+          console.log(err.message);
+          alert('Wrong Email or Password');
+        },
       });
     }
   }
@@ -66,7 +71,7 @@ export class AuthenticateComponent implements OnInit {
           this.serv.register('signup',body).subscribe( res => {
           console.log(res);
           this.serv.createDb(email,currentUser).subscribe(res => console.log(res));
-          this.serv.user$.next(currentUser);
+          this.signup = false;
         })
       }
     }
