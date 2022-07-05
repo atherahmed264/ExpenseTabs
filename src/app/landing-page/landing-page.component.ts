@@ -17,6 +17,9 @@ export class LandingPageComponent implements OnInit {
   amount!:any;
   date!:any;
 
+  currency:string='';
+  filterMonth:String[] = [];
+
   add:boolean = false;
   items!:{}[];
   username!:any;
@@ -35,15 +38,14 @@ export class LandingPageComponent implements OnInit {
       this.user = sessionStorage.getItem('user');
       console.log(this.user);
     }
-    this.loader = true;
     this.loadData();
-    this.loader = false;
+    this.getMonths();
   }
 
   loadData() {
+    this.loader = true;
     this.service.getData(this.user).subscribe({
       next: res => {
-        this.loader = true;
         this.items = [];
         this.sett = [];
         this.datesList = [];
@@ -110,11 +112,29 @@ export class LandingPageComponent implements OnInit {
     });
   }
 
-  currencyChange() {}
+  currencyChange() {
+    if (this.currency) {
+      this.service.userCurrency$.next(this.currency);
+    }
+    else {
+      this.service.userCurrency$.next('')
+    }
+  }
 
   logout(){
     this.service.user$.next('');
     sessionStorage.removeItem('user');
     this.route.navigate(['']);  
   }
+
+  getMonths() {
+    let date = new Date();
+    for(let i=0; i<=11; i++){
+      date.setMonth(i);
+      let month = date.toLocaleString('en-US', { month:'long'});
+      this.filterMonth.push(month);
+    }
+    console.log(this.filterMonth);
+  }
+
 }

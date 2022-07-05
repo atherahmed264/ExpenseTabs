@@ -1,6 +1,7 @@
 import { HttpClient } from "@angular/common/http";
 import { Injectable } from "@angular/core";
 import { BehaviorSubject, Observable } from "rxjs";
+import { Expense } from "./expense.model";
 import { newuser } from "./newUser.model";
 
 @Injectable({
@@ -15,14 +16,9 @@ export class Auth {
     signinUrl:string =`https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=${this.APIKEY}`;
 
     user$:BehaviorSubject<string> = new BehaviorSubject('');
+    userData$:BehaviorSubject<Expense> | BehaviorSubject<undefined> = new BehaviorSubject(undefined);
+    userCurrency$:BehaviorSubject<string> = new BehaviorSubject('');
     
-    // store(str:string ,ntr : string) : Observable<any> {
-    //     let body = {
-    //         name : str,
-    //         place : ntr
-    //     }
-    //     return this.http.post(this.databaseUrl,body);
-    // }
     register(action:String , body:newuser) : Observable<any>{
         let url = action.toUpperCase() == 'LOGIN' ? this.signinUrl : this.signupUrl ;
         return this.http.post(url,body); 
