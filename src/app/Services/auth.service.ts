@@ -1,6 +1,6 @@
 import { HttpClient } from "@angular/common/http";
 import { Injectable } from "@angular/core";
-import { BehaviorSubject, Observable } from "rxjs";
+import { BehaviorSubject, Observable, Subject } from "rxjs";
 import { Expense } from "./expense.model";
 import { newuser } from "./newUser.model";
 
@@ -18,6 +18,7 @@ export class Auth {
     user$:BehaviorSubject<string> = new BehaviorSubject('');
     userData$:BehaviorSubject<Expense> | BehaviorSubject<undefined> = new BehaviorSubject(undefined);
     userCurrency$:BehaviorSubject<string> = new BehaviorSubject('');
+    token$:BehaviorSubject<any> = new BehaviorSubject('');
     
     register(action:String , body:newuser) : Observable<any>{
         let url = action.toUpperCase() == 'LOGIN' ? this.signinUrl : this.signupUrl ;
@@ -38,4 +39,12 @@ export class Auth {
     getData(path:String) : Observable<any> {
         return this.http.get(this.databaseUrl+path+'.json');
     }
+
+    // returnToken(){
+    //      this.token$.subscribe({
+    //         next: res => {
+    //             return res
+    //         }
+    //     })
+    // }
 }

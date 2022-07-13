@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { Auth } from '../Services/auth.service';
 import { Expense } from '../Services/expense.model';
+import { ViewportScroller } from '@angular/common';
 
 @Component({
   selector: 'app-landing-page',
@@ -10,7 +11,7 @@ import { Expense } from '../Services/expense.model';
 })
 export class LandingPageComponent implements OnInit {
 
-  constructor( private service:Auth ,private route:Router) { }
+  constructor( private service:Auth ,private route:Router, private scroll:ViewportScroller) { }
 
   user!:any;
   reason!:String;
@@ -18,7 +19,9 @@ export class LandingPageComponent implements OnInit {
   date!:any;
 
   currency:string='';
+  month:string = ''
   filterMonth:String[] = [];
+  duplicateData:{}[] = []
 
   add:boolean = false;
   items!:{}[];
@@ -27,10 +30,11 @@ export class LandingPageComponent implements OnInit {
   displayName!:any;
   dummy:any;
   loader:boolean = false;
+  addLoader = false;
 
-  dataDisplay:any=[];
-  datesList:any = [];
-  sett:any =[];
+  dataDisplay:{}[]=[];
+  datesList:{}[] = [];
+  userData:any=[];
 
   ngOnInit(): void {
     this.service.user$.subscribe( res => this.user=res);
@@ -47,7 +51,7 @@ export class LandingPageComponent implements OnInit {
     this.service.getData(this.user).subscribe({
       next: res => {
         this.items = [];
-        this.sett = [];
+        this.userData = [];
         this.datesList = [];
         for( let key in res){
           this.items.push(res[key]);
@@ -66,16 +70,16 @@ export class LandingPageComponent implements OnInit {
           this.datesList.push({date:month+' '+year,values:[]});
         })
         console.log(this.datesList);
-        this.sett = this.datesList.filter((val:any,i:number) => {
+        this.userData = this.datesList.filter((val:any,i:number) => {
           let _val = JSON.stringify(val) 
           return i == this.datesList.findIndex((x:any) => {
             let str = JSON.stringify(x)
             return str == _val
           })
         })
-        console.log(this.sett);
+        console.log(this.userData);
         this.expenseList.forEach( el => {
-          this.sett.forEach( (vals:any) => {
+          this.userData.forEach( (vals:any) => {
             let d = new Date(el.date);
             let [a,month,b,year] = d.toString().split(' ');
             if( month+' '+year == vals.date){
@@ -83,7 +87,8 @@ export class LandingPageComponent implements OnInit {
             }
           })
         })
-        console.log(this.sett);
+        console.log(this.userData);
+        this.duplicateData = this.userData;
         this.loader = false;
       },
       error: err => {
@@ -94,6 +99,7 @@ export class LandingPageComponent implements OnInit {
   }
 
   addExp() {
+    this.addLoader = true;
     let body:Expense = {
       amount: this.amount,
       reason: this.reason,
@@ -105,8 +111,8 @@ export class LandingPageComponent implements OnInit {
         this.amount = '';
         this.reason = '';
         this.date = '';
-        alert('Sucessfully Added');
         this.loadData();
+        this.addLoader = false;
       },
       error: err => alert(err.message)
     });
@@ -124,6 +130,7 @@ export class LandingPageComponent implements OnInit {
   logout(){
     this.service.user$.next('');
     sessionStorage.removeItem('user');
+    sessionStorage.removeItem('token');
     this.route.navigate(['']);  
   }
 
@@ -136,5 +143,32 @@ export class LandingPageComponent implements OnInit {
     }
     console.log(this.filterMonth);
   }
+  scrollTo(){
+    this.add = !this.add;
+    if(this.add){
+      setTimeout(() => {
+        document.getElementById("addExpense")?.scrollIntoView({
+          behavior: "smooth",
+          block: "start",
+          inline: "nearest"
+        });
+        console.log( document.getElementById("addExpense") , 'aaaaaa');
+      },500)
+    }
+  }
 
+  filterByMonth(ev:any){
+    this.userData = this.duplicateData;
+    if(!ev){
+      return
+    }
+    console.log(ev);
+    let filter = ev;
+    this.userData = this.userData.filter( (val:any) => {
+      let [a] = val.date.split(' ');
+        return filter.includes(a)
+      
+    })
+    console.log(this.userData);
+  }
 }

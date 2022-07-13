@@ -17,6 +17,7 @@ export class AuthenticateComponent implements OnInit {
   signupForm:any;
   signup:boolean = false
   repass!:String;
+  loader=false;
 
   ngOnInit(): void {
     this.loginForm = this.fb.group({
@@ -32,6 +33,7 @@ export class AuthenticateComponent implements OnInit {
   }
 
   login(){
+    this.loader = true;
     if(this.loginForm.valid){
       this.serv.register('login',{
         email:this.loginForm.value?.Email,
@@ -40,14 +42,18 @@ export class AuthenticateComponent implements OnInit {
       })
       .subscribe({
         next: res => {
-          console.log(res.email);
+          console.log(res);
+          this.serv.token$.next(res.idToken);
+          sessionStorage.setItem('token',res.idToken);
           let [user] = res.email.split('@');
           this.serv.user$.next(user);
           sessionStorage.setItem('user',user);
-          this.route.navigate(['/landing'])
+          this.route.navigate(['/landing']);
+          this.loader = false;
         },
         error: err => {
           console.log(err.message);
+          this.loader=false;
           alert('Wrong Email or Password');
         },
       });

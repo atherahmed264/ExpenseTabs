@@ -5,7 +5,15 @@ module.exports = {
     "./src/app/landing-page/landing-page.component.{html,ts}"
   ],
   theme: {
-    extend: {},
+    extend: {
+      backgroundImage:{
+        'money':"url(assets/money.jpg)"
+      },
+      colors:{
+        'royalBlue':'#00539CFF',
+        'peach':'#EEA47FFF'
+      }
+    },
   },
   plugins: [],
 }
