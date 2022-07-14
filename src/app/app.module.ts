@@ -8,13 +8,14 @@ import { AppComponent } from './app.component';
 import { AuthenticateComponent } from './authenticate/authenticate.component';
 import { LandingPageComponent } from './landing-page/landing-page.component';
 import { InterceptorService } from './Services/interceptor.service';
-
+import { DetailsComponent } from './details-page/details.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     AuthenticateComponent,
     LandingPageComponent,
+    DetailsComponent
   ],
   imports: [
     BrowserModule,

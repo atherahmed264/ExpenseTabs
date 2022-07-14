@@ -171,4 +171,8 @@ export class LandingPageComponent implements OnInit {
     })
     console.log(this.userData);
   }
+
+  sort(){
+    this.userData.reverse();
+  }
 }

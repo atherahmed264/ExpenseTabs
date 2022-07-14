@@ -2,37 +2,31 @@
     <p class="px-4 font-mono border-2 bg-black text-white rounded-3xl"> Expense Tabs</p>
     <p class=" mr-4 md:mr-8 font-mono px-3 bg-gradient-to-tl from-red-500 py-auto to-red-700 rounded-sm cursor-pointer" (click)="logout()">Log out</p>
 </div>
-<div class="absolute w-full min-h-full bg-royalBlue">
-<div class="body text-3xl font-mono text-slate-200 flex items-center flex-col space-y-4 mt-6">
+<div class="absolute w-full min-h-full bg-slate-300">
+<div class="body text-3xl font-mono text-black flex items-center flex-col space-y-4 mt-6">
     <p>Welcome, {{ displayName}}</p>
 </div>
 <div class=" cont flex flex-col mt-7 min-w-full bg-slate-300 space-y-5 py-5">
     <div class="flex justify-evenly">
-        <p class="border-b-2 border-black font-bold font-mono pl-4">Expenses</p>
+        <p class="border-b-2 border-black font-bold font-mono pl-4 text-center">Your Expenses</p>
     </div>
     <div class="flex justify-between">
-        <div class="flex justify-between space-x-2 md:mr-36">
-            <div class="flex space-x-2">
-                <select name="currency" id="curr" class="rounded-lg ml-3 pl-2" (change)="currencyChange()" [(ngModel)]="currency">
-                    <option value="" class="text-sm">Select Currency</option>
-                    <option value="rupee" class="text-sm">Rupees</option>
-                    <option value="rial" class="text-sm">Rials</option>
-                    <option value="dollars" class="text-sm">Dollars</option>
-                    <option value="euros" class="text-sm">Euros</option>
-                </select>
-                <select name="month" id="month" class="rounded-lg mr-3 pl-2" (change)="filterByMonth($any($event.target).value)" [(ngModel)]="month">
+        <div class="flex space-x-2 mx-auto md:mr-36">
+            
+                <select name="month" id="month" class=" rounded-lg" (change)="filterByMonth($any($event.target).value)" [(ngModel)]="month">
                     <option value="">Filter by Month</option>
                     <option *ngFor="let mn of filterMonth" [value]="mn">{{ mn }}</option>
                 </select>
-            </div>
+                <button class="bg-amber-600 px-3 py-2 text-white rounded-lg" (click)="sort()">show latest</button>
+            
             <button class="bg-gradient-to-r from-green-600 to-green-800 text-white rounded-lg px-3 py-2" (click)="scrollTo()">Add New</button>
         </div>
     </div>
     <div *ngIf="!loader; else that"
         class="flex flex-col space-y-3 justify-center md:flex-row md:flex-wrap ">
         <div *ngFor="let item of userData" 
-            class="cards bg-white shadow-xl flex flex-col px-4 w-[390px] rounded-xl mx-2 py-3">
-            <div class="head text-sm text-slate-600 font-bold">{{ item.date }}</div>
+            class="cards bg-gradient-to-br from-gray-700 to-gray-900 text-white shadow-xl flex flex-col px-4 w-[390px] rounded-xl mx-2 py-3">
+            <div class="head text-sm text-slate-200 font-bold">{{ item.date }}</div>
             <div class="content text-lg mb-0">
                 <ul>
                     <li *ngFor="let sub of item.values">{{ sub.reason }}, {{ sub.amount }}</li>
@@ -85,7 +79,9 @@
             class="w-[350px] md:ml-14 border py-2 rounded-lg  text-black">
         </div>
         <div class="flex items-end mt-5">
-            <button id="addExpense" class="px-4 py-2 bg-lime-700 text-white" (click)="addExp()">Add expense</button>
+            <ng-container *ngIf="!addLoader">
+                <button id="addExpense" class="px-4 py-2 bg-lime-700 text-white" (click)="addExp()">Add expense</button>
+            </ng-container>
             <ng-container *ngIf="addLoader">
                 <button  class="px-4 py-2 bg-lime-700 text-white"> <span class="animate-pulse"> Adding... </span></button>
             </ng-container>
