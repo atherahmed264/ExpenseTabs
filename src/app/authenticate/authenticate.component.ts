@@ -19,10 +19,19 @@ export class AuthenticateComponent implements OnInit {
   repass!:String;
   loader=false;
 
+  autoEmail!:string;
+  autoPass!:string;
   ngOnInit(): void {
+    let email = localStorage.getItem('email');
+    let pass = localStorage.getItem('pass');
+    if(email && pass){
+      this.autoPass = pass;
+      this.autoEmail = email;
+      console.log(email,pass);
+    }
     this.loginForm = this.fb.group({
-      Email:['',[Validators.required,Validators.email]],
-      Password:['',[Validators.required]]
+      Email:[email ? email : '',[Validators.required]],
+      Password:[pass ? pass : '',[Validators.required]]
     })
     this.signupForm = this.fb.group({
       Username:['',[Validators.required,Validators.minLength(5)]],
@@ -35,8 +44,10 @@ export class AuthenticateComponent implements OnInit {
   login(){
     this.loader = true;
     if(this.loginForm.valid){
+      let email:string = this.loginForm.value?.Email;
+      if(email.includes(' ')) email = email.replace(' ',''); 
       this.serv.register('login',{
-        email:this.loginForm.value?.Email,
+        email:email,
         password:this.loginForm.value?.Password,
         token:true,
       })
@@ -48,6 +59,8 @@ export class AuthenticateComponent implements OnInit {
           let [user] = res.email.split('@');
           this.serv.user$.next(user);
           sessionStorage.setItem('user',user);
+          localStorage.setItem('email',email.toLowerCase());
+          localStorage.setItem('pass',this.loginForm.value?.Password);
           this.route.navigate(['/landing']);
           this.loader = false;
         },
@@ -67,6 +80,7 @@ export class AuthenticateComponent implements OnInit {
         alert('Passwords Dont Match Please Try Again !');
       }
       else {
+          this.loader = true;
           let body:newuser = {
           email:this.signupForm.value?.Email,
           password:this.signupForm.value?.password,
@@ -77,7 +91,9 @@ export class AuthenticateComponent implements OnInit {
           this.serv.register('signup',body).subscribe( res => {
           console.log(res);
           this.serv.createDb(email,currentUser).subscribe(res => console.log(res));
+          this.loader = false;
           this.signup = false;
+          alert('Account Created Sucessfully please login');
         })
       }
     }

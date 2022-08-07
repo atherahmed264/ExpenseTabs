@@ -1,12 +1,9 @@
-<div class="header text-xl flex justify-between min-w-full sticky bg-slate-800 text-white py-2">
-    <p class="px-4 font-mono border-2 bg-black text-white rounded-3xl"> Expense Tabs</p>
-    <p class=" mr-4 md:mr-8 font-mono px-3 bg-gradient-to-tl from-red-500 py-auto to-red-700 rounded-sm cursor-pointer" (click)="logout()">Log out</p>
+<app-nav></app-nav>
+<div class=" min-h-screen w-full absolute bg-slate-300">
+<div class="body text-3xl font-mono text-black flex items-center flex-col space-y-4 mt-3">
+    <p>Welcome, {{ username}}</p>
 </div>
-<div class="absolute w-full min-h-full bg-slate-300">
-<div class="body text-3xl font-mono text-black flex items-center flex-col space-y-4 mt-6">
-    <p>Welcome, {{ displayName}}</p>
-</div>
-<div class=" cont flex flex-col mt-7 min-w-full bg-slate-300 space-y-5 py-5">
+<div class=" cont flex flex-col mt-5 min-w-full bg-slate-300 space-y-5 py-3">
     <div class="flex justify-evenly">
         <p class="border-b-2 border-black font-bold font-mono pl-4 text-center">Your Expenses</p>
     </div>
@@ -17,21 +14,31 @@
                     <option value="">Filter by Month</option>
                     <option *ngFor="let mn of filterMonth" [value]="mn">{{ mn }}</option>
                 </select>
-                <button class="bg-amber-600 px-3 py-2 text-white rounded-lg" (click)="sort()">show latest</button>
+                <button class="bg-amber-600 px-3 py-2 text-white rounded-lg" 
+                    (click)="sort();this.sorted = !this.sorted">
+                    {{ sorted ? 'Show Newer':'Show Older'}}
+                </button>
             
             <button class="bg-gradient-to-r from-green-600 to-green-800 text-white rounded-lg px-3 py-2" (click)="scrollTo()">Add New</button>
         </div>
     </div>
+    <div class="flex justify-center items-center" *ngIf="month">
+        <button class="px-2 py-1 bg-red-600 text-white rounded-full" (click)="filterByMonth('');month=''">Clear Filter</button>
+    </div>
     <div *ngIf="!loader; else that"
-        class="flex flex-col space-y-3 justify-center md:flex-row md:flex-wrap ">
-        <div *ngFor="let item of userData" 
-            class="cards bg-gradient-to-br from-gray-700 to-gray-900 text-white shadow-xl flex flex-col px-4 w-[390px] rounded-xl mx-2 py-3">
-            <div class="head text-sm text-slate-200 font-bold">{{ item.date }}</div>
+        class="flex flex-col space-y-3 justify-center md:flex-row md:flex-wrap">
+        <div *ngFor="let item of userData; let i = index" (click)="view(item.id)"
+            class="cards bg-gradient-to-br from-gray-700 to-gray-900 text-white shadow-xl flex flex-col px-4 rounded-xl mx-2 py-3">
+            <div class="head text-sm text-slate-200 font-bold mb-2">{{ item.date }}</div>
             <div class="content text-lg mb-0">
                 <ul>
-                    <li *ngFor="let sub of item.values">{{ sub.reason }}, {{ sub.amount }}</li>
+                    <li *ngFor="let sub of item.values">{{ sub.reason }} - {{ sub.amount }}</li>
                 </ul>
             </div>
+        </div>
+        <div class="flex px-5 py-3 mt-2 bg-red-50 border-red-500 mx-5 border-b-2 border-t-2 justify-center items-center" 
+            *ngIf="!userData.length || !expenseList.length">
+            <p class="text-center font-mono font-bold">No Records Found</p>
         </div>
     </div>
     <ng-template #that>
@@ -58,7 +65,7 @@
     class="rounded-xl px-6 py-3 text-white" [ngClass]=" add ? 'bg-red-600' : 'bg-green-700'"
     (click)="scrollTo()" >
     {{ add ? 'Cancel' : 'Add Expense'}}</button>
-    <p class="text-sm text-slate-200">Click to {{ add ? 'Cancel' : 'Add Expense'}}</p>
+    <p class="text-sm">Click to {{ add ? 'Cancel' : 'Add Expense'}}</p>
 </div>
 <div class="flex flex-col md:items-center mb-6 " *ngIf="add" id="noob">
 
@@ -75,12 +82,12 @@
         </div>
         <div class="flex flex-col font-mono md:flex-row ">
             <label for="expense text-xl"><p class="text-white">Date of Expense</p></label>
-            <input type="date" [(ngModel)] = "date"
+            <input type="date" [value]="date" (change)="dateChanged($event.target)"
             class="w-[350px] md:ml-14 border py-2 rounded-lg  text-black">
         </div>
         <div class="flex items-end mt-5">
             <ng-container *ngIf="!addLoader">
-                <button id="addExpense" class="px-4 py-2 bg-lime-700 text-white" (click)="addExp()">Add expense</button>
+                <button id="addExpense" class="px-4 py-2 bg-lime-700 text-white" (click)="addExpense()">Add expense</button>
             </ng-container>
             <ng-container *ngIf="addLoader">
                 <button  class="px-4 py-2 bg-lime-700 text-white"> <span class="animate-pulse"> Adding... </span></button>

@@ -1,0 +1,64 @@
+<app-nav></app-nav>
+<div class="min-h-screen w-full  bg-slate-300">
+    
+    <div class="overflow-x-auto relative flex items-center justify-center flex-col">
+        <p class="text-lg font-mono p-2 border-b-2 border-black"> {{ date}} </p>
+        <div class="font-bold font-mono px-4 py-3 mt-8 bg-blue-100 border-blue-400 border-t-2 border-b-2 mx-2">Total Expenses for this month - 
+            {{ total }}
+        </div>
+        <table class=" text-sm text-left text-gray-500 dark:text-gray-400 mt-8 shadow-lg shadow-black md:w-[1000px]">
+            <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
+                <tr>
+                    <th scope="col" class="py-3 px-4 rounded-tl-lg">
+                        Date
+                    </th>
+                    <th scope="col" class="py-3 px-4">
+                        Expense
+                    </th>
+                    <th scope="col" class="py-3 px-4">
+                        Amount
+                    </th>
+                    <th scope="col" class="py-3 px-4 rounded-tr-lg">
+                        Action
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor="let item of displayData.values;let i=index" 
+                    class="border-b"  [ngClass]="i%2 == 0 ? ' bg-gray-900 border-gray-700':' bg-gray-700 border-gray-600 '">
+                    <th class="py-4 px-4 font-medium text-gray-300" >
+                        {{ item.date | date:'ccc,dd'}}
+                    </th>
+                    <td class="py-4 px-4">
+                        {{ item.reason }}
+                    </td>
+                    <td class="py-4 px-4">
+                        {{ item.amount }}
+                    </td>
+                    <td *ngIf="custom" class="py-4 px-4" >
+                        <input class="ml-3" type="checkbox" value="{{ i }}" (change)="checked(i)">
+                    </td>
+                    <td *ngIf="!custom" class="py-4 px-4">
+                        <p class="text-red-600 text-center cursor-pointer" (click)="delete(item,i)">Delete</p>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+        <div class="flex flex-col mt-10" *ngIf="custom" >
+            <div>
+                <p class="text-sm font-semibold font-mono">Select Checkbox to Calculate Custom Total</p>
+            </div>
+            <div *ngIf="arrayForTotal.length > 0"
+                class="py-4 px-2 bg-green-200 border-green-600 border-t-2 border-b-2 text-center mt-4">
+                <span class="font-mono text-lg font-bold"> Selected Item's Total = {{ customTotal }} </span> 
+            </div>
+        </div>
+        
+    </div>
+    <div class="flex justify-end mt-5 mx-8 flex-col md:mr-10">
+        <button class="px-4 py-2 bg-blue-700 text-white rounded-md md:w-[200px] md:mx-auto" (click)="reset()">
+            {{ custom ? 'Cancel' : 'Custom Total'}}
+        </button>
+        <p class="text-sm text-center font-mono my-3">Click to Calculate Total based on Selection</p>
+    </div>
+</div>

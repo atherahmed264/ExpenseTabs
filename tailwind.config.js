@@ -2,7 +2,9 @@
 module.exports = {
   content: [
     "./src/app/authenticate/authenticate.component.{html,ts}",
-    "./src/app/landing-page/landing-page.component.{html,ts}"
+    "./src/app/landing-page/landing-page.component.{html,ts}",
+    "./src/app/landing-page/navbar.component.{html,ts}",
+    "./src/app/details-page/details.component.{html,ts}"
   ],
   theme: {
     extend: {

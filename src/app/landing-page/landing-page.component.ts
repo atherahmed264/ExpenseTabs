@@ -3,6 +3,7 @@ import { Router } from '@angular/router';
 import { Auth } from '../Services/auth.service';
 import { Expense } from '../Services/expense.model';
 import { ViewportScroller } from '@angular/common';
+import * as moment from 'moment';
 
 @Component({
   selector: 'app-landing-page',
@@ -16,7 +17,7 @@ export class LandingPageComponent implements OnInit {
   user!:any;
   reason!:String;
   amount!:any;
-  date!:any;
+  date: any= moment().format('YYYY-MM-DD');
 
   currency:string='';
   month:string = ''
@@ -44,6 +45,7 @@ export class LandingPageComponent implements OnInit {
     }
     this.loadData();
     this.getMonths();
+    console.log(this.date);
   }
 
   loadData() {
@@ -54,11 +56,12 @@ export class LandingPageComponent implements OnInit {
         this.userData = [];
         this.datesList = [];
         for( let key in res){
+          res[key].Guid = key;
           this.items.push(res[key]);
         }
         console.log(this.items)
-        let [ a , ...b] = this.items;
-        this.username = a;
+        let [ a , ...b]:any = this.items;
+        this.username = this.firstLetterCap(a.name);
         console.log(this.username);
         this.dummy = b;
         this.expenseList = this.dummy;
@@ -89,6 +92,9 @@ export class LandingPageComponent implements OnInit {
         })
         console.log(this.userData);
         this.duplicateData = this.userData;
+        this.service.userData$.next(this.userData);
+        this.sort()
+        this.userData = this.setId(this.userData);
         this.loader = false;
       },
       error: err => {
@@ -98,7 +104,19 @@ export class LandingPageComponent implements OnInit {
     })
   }
 
-  addExp() {
+  setId(arr:any[]){
+    return arr.map( (val,i) => {
+      return {
+        ...val,
+        id:i
+      }
+    })
+  }
+  addExpense() {
+    if(!this.amount || !this.reason || !this.date){
+      alert('Enter All Fields');
+      return;
+    }
     this.addLoader = true;
     let body:Expense = {
       amount: this.amount,
@@ -110,7 +128,7 @@ export class LandingPageComponent implements OnInit {
       next: res => {
         this.amount = '';
         this.reason = '';
-        this.date = '';
+        
         this.loadData();
         this.addLoader = false;
       },
@@ -125,13 +143,6 @@ export class LandingPageComponent implements OnInit {
     else {
       this.service.userCurrency$.next('')
     }
-  }
-
-  logout(){
-    this.service.user$.next('');
-    sessionStorage.removeItem('user');
-    sessionStorage.removeItem('token');
-    this.route.navigate(['']);  
   }
 
   getMonths() {
@@ -172,7 +183,36 @@ export class LandingPageComponent implements OnInit {
     console.log(this.userData);
   }
 
-  sort(){
-    this.userData.reverse();
+  sorted = false;
+    sort(){
+      this.userData.reverse();
+    }
+    view(i:number){
+      this.service.userData$.next(this.duplicateData);
+      this.route.navigate(['landing',i]);
+    }
+    dateChanged(ev:any){
+      console.log(ev.value,'aaaaa')
+    }
+    firstLetterCap(str:string):string{
+      let fst = str[0].toUpperCase();
+      let srr = str.replace(str[0],fst); 
+      console.log(srr,'capiital',fst)
+      return srr
+    }
   }
+
+  //NavBar Small reusable component
+  @Component({
+    selector:'app-nav',
+    templateUrl:'./navbar.component.html'
+  })
+  export class NavbarComponent {
+    constructor(private service:Auth,private route:Router){}
+    logout(){
+      this.service.user$.next('');
+      sessionStorage.removeItem('user');
+      sessionStorage.removeItem('token');
+      this.route.navigate(['']);  
+    }
 }

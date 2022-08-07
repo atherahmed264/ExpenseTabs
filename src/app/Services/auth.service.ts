@@ -1,7 +1,6 @@
 import { HttpClient } from "@angular/common/http";
 import { Injectable } from "@angular/core";
-import { BehaviorSubject, Observable, Subject } from "rxjs";
-import { Expense } from "./expense.model";
+import { BehaviorSubject, Observable } from "rxjs";
 import { newuser } from "./newUser.model";
 
 @Injectable({
@@ -16,7 +15,7 @@ export class Auth {
     signinUrl:string =`https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=${this.APIKEY}`;
 
     user$:BehaviorSubject<string> = new BehaviorSubject('');
-    userData$:BehaviorSubject<Expense> | BehaviorSubject<undefined> = new BehaviorSubject(undefined);
+    userData$:BehaviorSubject<any>= new BehaviorSubject('');
     userCurrency$:BehaviorSubject<string> = new BehaviorSubject('');
     token$:BehaviorSubject<any> = new BehaviorSubject('');
     
@@ -40,6 +39,9 @@ export class Auth {
         return this.http.get(this.databaseUrl+path+'.json');
     }
 
+    deleteItem(user:string,guid:string){
+        return this.http.delete(this.databaseUrl+user+'/'+guid+'.json');
+    }
     // returnToken(){
     //      this.token$.subscribe({
     //         next: res => {

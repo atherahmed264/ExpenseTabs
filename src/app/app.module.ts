@@ -6,7 +6,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 import { AppComponent } from './app.component';
 import { AuthenticateComponent } from './authenticate/authenticate.component';
-import { LandingPageComponent } from './landing-page/landing-page.component';
+import { LandingPageComponent,NavbarComponent } from './landing-page/landing-page.component';
 import { InterceptorService } from './Services/interceptor.service';
 import { DetailsComponent } from './details-page/details.component';
 
@@ -15,7 +15,8 @@ import { DetailsComponent } from './details-page/details.component';
     AppComponent,
     AuthenticateComponent,
     LandingPageComponent,
-    DetailsComponent
+    DetailsComponent,
+    NavbarComponent
   ],
   imports: [
     BrowserModule,
