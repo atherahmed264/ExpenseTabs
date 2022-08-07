@@ -11,12 +11,19 @@ Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`. The appli
 Concepts Used :
 
 Http Interceptor
+
 Auth Guard
+
 Firebase Authentication
+
 Custom Pipes
+
 Firebase Realtime Database
+
 Tailwind CSS
+
 Observables
+
 Routes
 
 ## Running unit tests
