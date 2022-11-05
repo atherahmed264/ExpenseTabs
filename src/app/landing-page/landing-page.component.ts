@@ -192,6 +192,7 @@ export class LandingPageComponent implements OnInit {
       this.route.navigate(['landing',i]);
     }
     dateChanged(ev:any){
+      this.date = ev.value;
       console.log(ev.value,'aaaaa')
     }
     firstLetterCap(str:string):string{
