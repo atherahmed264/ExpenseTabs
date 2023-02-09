@@ -9,6 +9,7 @@ import { AuthenticateComponent } from './authenticate/authenticate.component';
 import { LandingPageComponent,NavbarComponent } from './landing-page/landing-page.component';
 import { InterceptorService } from './Services/interceptor.service';
 import { DetailsComponent } from './details-page/details.component';
+import { DatePipe } from '@angular/common';
 
 @NgModule({
   declarations: [
@@ -26,7 +27,8 @@ import { DetailsComponent } from './details-page/details.component';
     ReactiveFormsModule
   ],
   providers: [
-    {provide:HTTP_INTERCEPTORS,useClass:InterceptorService,multi:true}
+    {provide:HTTP_INTERCEPTORS,useClass:InterceptorService,multi:true},
+    DatePipe
   ],
   bootstrap: [AppComponent]
 })

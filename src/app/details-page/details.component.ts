@@ -1,14 +1,22 @@
+import { DatePipe } from '@angular/common';
 import { Component, OnInit } from '@angular/core'
 import { ActivatedRoute, Router } from '@angular/router';
 import { Auth } from '../Services/auth.service';
 
 @Component({
     selector:'app-details',
-    templateUrl:'./details.component.html'
+    templateUrl:'./details.component.html',
+    styles:[`
+        .img{
+            background-image: url("/assets/pexels-pixabay-259191.jpg");
+        }
+    `]
 })
 export class DetailsComponent implements OnInit {
+    mostDays: any;
+    average: any;
 
-    constructor(private service:Auth,private route:Router,private params:ActivatedRoute){}
+    constructor(private service:Auth,private route:Router,private params:ActivatedRoute,private datePipe:DatePipe){}
     
     user:any;
     id!:any;
@@ -36,6 +44,8 @@ export class DetailsComponent implements OnInit {
                 this.date = this.displayData.date
                 console.log(this.displayData);
                 this.total = this.getTotal(this.displayData.values);
+                this.average = this.getAverage(this.displayData.values).toFixed(2);
+                this.mostDays = this.getMostDays(this.displayData.values) + `'s`;
             }
         })
     }
@@ -47,6 +57,41 @@ export class DetailsComponent implements OnInit {
     }
     arrayForTotal:any[] = [];
     
+    getAverage(data:[{ amount:number,date:string,reason:string,Guid:string}]):number{
+        
+        let dateArray = data.map(val => {
+            let num = val.date.slice(-2);
+            return parseInt(num);
+        });
+        let max = Math.max(...dateArray);
+        let noofWeeks = Math.ceil(max/7);
+        let spentPerWeek = this.total/noofWeeks;
+        return spentPerWeek;
+    }
+    getMostDays(data:[{ amount:number,date:string,reason:string,Guid:string}]):string{
+        let daysArray = data.map(val => {
+            let format = this.datePipe.transform(val.date,'EEEE, MMMM d, y');
+            if(format){
+                let [ day ] = format?.split(',');
+                return day;   
+            } else {
+                return '-';
+            }
+        });
+        let obj = daysArray.reduce((acc:any,val:any) => {
+            acc[val] = acc[val] ? acc[val] + 1 : 1;
+            return acc;
+        },{});
+        let copy = Object.keys(obj).reduce((acc:any,val:any) => {
+            let key = obj[val].toString();
+            acc[key] = val;
+            return acc;
+        },{});
+        let args:number[] = Object.values(obj)
+        let result = Math.max(...args);
+        return copy[result];
+    }
+
     checked(i:number){
         debugger;
         console.log(i);

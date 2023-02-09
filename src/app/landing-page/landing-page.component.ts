@@ -216,4 +216,7 @@ export class LandingPageComponent implements OnInit {
       sessionStorage.removeItem('token');
       this.route.navigate(['']);  
     }
+    routeTo(){
+      this.route.navigate(['/landing']);
+    }
 }

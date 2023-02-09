@@ -27,8 +27,8 @@
     </div>
     <div *ngIf="!loader; else that"
         class="flex flex-col space-y-3 justify-center md:flex-row md:flex-wrap">
-        <div *ngFor="let item of userData; let i = index" (click)="view(item.id)"
-            class="cards bg-gradient-to-br from-gray-700 to-gray-900 text-white shadow-xl flex flex-col px-4 rounded-xl mx-2 py-3">
+        <div *ngFor="let item of userData; let i = index" (click)="view(item.id)" [ngClass]="i === 0 ? 'mt-3':''"
+            class="card bg-gradient-to-br from-gray-700 to-gray-900 text-white shadow-xl flex flex-col px-4 rounded-xl mx-2 py-3 md:h-[400px] md:w-[200px] md:overflow-y-hidden">
             <div class="head text-sm text-slate-200 font-bold mb-2">{{ item.date }}</div>
             <div class="content text-lg mb-0">
                 <ul>
