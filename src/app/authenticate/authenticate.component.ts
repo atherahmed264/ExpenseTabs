@@ -23,7 +23,7 @@ export class AuthenticateComponent implements OnInit {
   autoPass!:string;
   ngOnInit(): void {
     let email = localStorage.getItem('email');
-    let pass = localStorage.getItem('pass');
+    let pass = atob(localStorage.getItem('pass') as string);
     if(email && pass){
       this.autoPass = pass;
       this.autoEmail = email;
@@ -60,7 +60,8 @@ export class AuthenticateComponent implements OnInit {
           this.serv.user$.next(user);
           sessionStorage.setItem('user',user);
           localStorage.setItem('email',email.toLowerCase());
-          localStorage.setItem('pass',this.loginForm.value?.Password);
+          let encrypted = btoa(this.loginForm.value?.Password);
+          localStorage.setItem('pass',encrypted);
           this.route.navigate(['/landing']);
           this.loader = false;
         },
